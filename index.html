@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nutri Greenz Farm — Site Under Construction</title>
+<meta name="description" content="Nutri Greenz Farm — Hyderabad's home for clean, native, farm-sourced foods: millets, pulses, cold-pressed oils, and indigenous grains. Born in soil, built for tomorrow." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --soil:        #3a2a1a;
+    --bark:        #5a3d27;
+    --leaf-deep:   #1f4d1f;
+    --leaf:        #2f7a2f;
+    --leaf-bright: #5fb84a;
+    --olive:       #8b9d4b;
+    --wheat:       #c9a961;
+    --gold:        #b89a5e;
+    --terracotta:  #c47e54;
+    --tomato:      #d35a3a;
+    --cream:       #f7efde;
+    --cream-soft:  #fdf8ec;
+    --sky:         #e6efd9;
+    --ink:         #2a1f12;
+    --ink-soft:    #5b4a36;
+
+    --shadow-float: 0 30px 60px -20px rgba(58, 42, 26, 0.25),
+                    0 14px 30px -12px rgba(58, 42, 26, 0.18);
+    --shadow-soft:  0 10px 30px -10px rgba(58, 42, 26, 0.18);
+    --glass-bg:     rgba(255, 251, 240, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--cream-soft);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    min-height: 100%;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(232, 196, 104, 0.35), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(74, 124, 42, 0.22), transparent 65%),
+      radial-gradient(700px 500px at 50% 120%, rgba(196, 126, 84, 0.18), transparent 70%),
+      linear-gradient(180deg, var(--cream-soft) 0%, var(--cream) 60%, var(--sky) 100%);
+    min-height: 100vh;
+    perspective: 1400px;
+  }
+
+  /* Floating decorative shapes */
+  .scene {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    transform-style: preserve-3d;
+  }
+  .float {
+    position: absolute;
+    will-change: transform;
+    filter: drop-shadow(0 18px 24px rgba(58, 42, 26, 0.18));
+    opacity: 0.95;
+  }
+  .float.leaf-1 { top: 8%;  left: 6%;  width: 110px; transform: rotate(-18deg); }
+  .float.leaf-2 { top: 70%; left: 4%;  width: 90px;  transform: rotate(22deg); }
+  .float.wheat  { top: 18%; right: 8%; width: 130px; transform: rotate(14deg); }
+  .float.tomato { top: 72%; right: 10%; width: 80px; }
+  .float.carrot { bottom: 8%; left: 38%; width: 70px; transform: rotate(-8deg); }
+  .float.seed   { top: 38%; left: 48%; width: 36px; opacity: 0.7; }
+  .float.barn   { bottom: 6%; right: 4%; width: 160px; opacity: 0.85; }
+
+  /* Subtle grain */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: radial-gradient(rgba(58, 42, 26, 0.06) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+
+  main {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 48px 24px;
+  }
+
+  .stage {
+    width: min(960px, 100%);
+    display: grid;
+    gap: 28px;
+    transform-style: preserve-3d;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-mark {
+    width: 56px; height: 56px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .brand-mark svg { width: 100%; height: 100%; }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--leaf-deep);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .brand-tag {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    margin-top: 4px;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bark);
+    box-shadow: var(--shadow-soft);
+  }
+  .pill .dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(196, 126, 84, 0.2);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1);   box-shadow: 0 0 0 4px rgba(196, 126, 84, 0.2); }
+    50%      { transform: scale(1.2); box-shadow: 0 0 0 8px rgba(196, 126, 84, 0); }
+  }
+
+  /* Hero card */
+  .card {
+    position: relative;
+    padding: clamp(36px, 5vw, 64px);
+    border-radius: 28px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(120%);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+    box-shadow: var(--shadow-float);
+    transform: translateZ(0);
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(600px 300px at 0% 0%, rgba(74,124,42,0.10), transparent 60%),
+      radial-gradient(500px 260px at 100% 100%, rgba(232,196,104,0.18), transparent 60%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--leaf-deep);
+    margin-bottom: 18px;
+  }
+  .eyebrow svg { width: 14px; height: 14px; }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(40px, 6.4vw, 76px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  h1 .accent {
+    color: var(--leaf-deep);
+    font-style: italic;
+    font-weight: 700;
+    position: relative;
+    white-space: nowrap;
+  }
+  h1 .accent::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0.05em;
+    height: 0.18em;
+    background: var(--wheat);
+    z-index: -1;
+    border-radius: 2px;
+  }
+
+  .lede {
+    font-size: clamp(16px, 1.6vw, 18px);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin-bottom: 32px;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 13px; color: var(--ink-soft); font-weight: 500;
+  }
+  .progress-meta strong { color: var(--leaf-deep); font-weight: 700; }
+  .progress-track {
+    position: relative;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(58, 42, 26, 0.08);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(58, 42, 26, 0.12);
+  }
+  .progress-bar {
+    position: absolute; inset: 0 auto 0 0;
+    width: 0%;
+    background: linear-gradient(90deg, var(--leaf) 0%, var(--olive) 60%, var(--wheat) 100%);
+    border-radius: 999px;
+    box-shadow: 0 0 20px rgba(232, 196, 104, 0.5);
+  }
+  .progress-bar::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.18) 0 8px,
+      transparent 8px 16px
+    );
+    animation: stripes 2s linear infinite;
+  }
+  @keyframes stripes { to { background-position: 32px 0; } }
+
+  /* Form */
+  .form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .form input {
+    flex: 1 1 240px;
+    min-width: 0;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(58, 42, 26, 0.14);
+    background: rgba(255,255,255,0.75);
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.3s ease-out, box-shadow 0.3s ease-out, transform 0.3s ease-out;
+  }
+  .form input::placeholder { color: rgba(91, 74, 54, 0.6); }
+  .form input:focus {
+    border-color: var(--leaf);
+    box-shadow: 0 0 0 4px rgba(74, 124, 42, 0.15);
+  }
+  .btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    padding: 16px 26px;
+    border-radius: 14px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--cream-soft);
+    background: linear-gradient(160deg, var(--leaf) 0%, var(--leaf-deep) 100%);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.25);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, filter 0.3s ease-out;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); filter: brightness(1.05); }
+  .btn:active { transform: translateY(0); }
+  .btn svg { width: 16px; height: 16px; }
+
+  .form-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .form-note.success { color: var(--leaf-deep); font-weight: 600; }
+
+  /* Stats grid */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .stat {
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(255, 251, 240, 0.7);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-soft);
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+  }
+  .stat:hover { transform: translateY(-4px) rotateX(4deg); box-shadow: var(--shadow-float); }
+  .stat .icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    margin-bottom: 12px;
+    color: var(--cream-soft);
+  }
+  .stat:nth-child(1) .icon { background: linear-gradient(160deg, var(--leaf), var(--leaf-deep)); }
+  .stat:nth-child(2) .icon { background: linear-gradient(160deg, var(--terracotta), #a35e3c); }
+  .stat:nth-child(3) .icon { background: linear-gradient(160deg, var(--wheat), #c89e3a); color: var(--soil); }
+  .stat .icon svg { width: 18px; height: 18px; }
+  .stat h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .stat p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* Footer */
+  .footer {
+    position: relative;
+    z-index: 3;
+    display: flex; align-items: center; justify-content: flex-start;
+    flex-wrap: wrap; gap: 18px;
+    padding-right: 28%;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 720px) {
+    .footer { padding-right: 0; }
+  }
+  .socials { display: flex; gap: 8px; }
+  .socials a {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border-radius: 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--bark);
+    text-decoration: none;
+    transition: transform 0.3s ease-out, color 0.3s ease-out, background 0.3s ease-out;
+  }
+  .socials a:hover { transform: translateY(-2px); color: var(--leaf-deep); background: rgba(255,255,255,0.85); }
+  .socials svg { width: 16px; height: 16px; }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: 1fr; }
+    .float.leaf-1, .float.barn { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating decorative scene -->
+<div class="scene" aria-hidden="true">
+  <!-- Leaf 1 -->
+  <svg class="float leaf-1" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 100 C 30 30, 80 10, 110 20 C 100 80, 60 110, 20 100 Z" fill="#4a7c2a"/>
+    <path d="M30 95 C 50 60, 80 35, 105 25" stroke="#2d5016" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>
+
+  <!-- Wheat -->
+  <svg class="float wheat" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M60 200 L60 60" stroke="#8b6f2a" stroke-width="3" stroke-linecap="round"/>
+    <g fill="#e8c468" stroke="#c89e3a" stroke-width="1.5">
+      <ellipse cx="60" cy="35" rx="10" ry="22"/>
+      <ellipse cx="42" cy="55" rx="9" ry="18" transform="rotate(-25 42 55)"/>
+      <ellipse cx="78" cy="55" rx="9" ry="18" transform="rotate(25 78 55)"/>
+      <ellipse cx="40" cy="85" rx="9" ry="18" transform="rotate(-25 40 85)"/>
+      <ellipse cx="80" cy="85" rx="9" ry="18" transform="rotate(25 80 85)"/>
+      <ellipse cx="42" cy="115" rx="9" ry="18" transform="rotate(-25 42 115)"/>
+      <ellipse cx="78" cy="115" rx="9" ry="18" transform="rotate(25 78 115)"/>
+    </g>
+  </svg>
+
+  <!-- Leaf 2 -->
+  <svg class="float leaf-2" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 95 C 25 25, 75 5, 105 15 C 95 75, 55 105, 15 95 Z" fill="#8b9d4b"/>
+    <path d="M25 90 C 45 55, 75 30, 100 20" stroke="#2d5016" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>
+
+  <!-- Tomato -->
+  <svg class="float tomato" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="58" r="34" fill="#d35a3a"/>
+    <circle cx="40" cy="50" r="6" fill="#e87a5a" opacity="0.6"/>
+    <path d="M50 28 L42 18 L50 22 L58 18 L50 28 Z M40 26 L34 22 M60 26 L66 22" stroke="#4a7c2a" stroke-width="3" stroke-linecap="round" fill="#4a7c2a"/>
+  </svg>
+
+  <!-- Carrot -->
+  <svg class="float carrot" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 130 L25 50 L75 50 Z" fill="#c47e54"/>
+    <path d="M50 130 L25 50 L75 50 Z" stroke="#a35e3c" stroke-width="1.5"/>
+    <path d="M30 60 L70 60 M35 80 L65 80 M40 100 L60 100" stroke="#a35e3c" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M50 50 L50 25 M40 50 L32 22 M60 50 L68 22" stroke="#4a7c2a" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Seed dot -->
+  <svg class="float seed" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="20" cy="20" rx="14" ry="10" fill="#5a3d27"/>
+    <ellipse cx="16" cy="16" rx="3" ry="2" fill="#c47e54" opacity="0.7"/>
+  </svg>
+
+  <!-- Barn silhouette -->
+  <svg class="float barn" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 130 L20 60 L100 20 L180 60 L180 130 Z" fill="#c47e54"/>
+    <path d="M20 60 L100 20 L180 60" stroke="#5a3d27" stroke-width="3" fill="none"/>
+    <rect x="80" y="80" width="40" height="50" fill="#5a3d27"/>
+    <path d="M80 80 L120 80 M100 80 L100 130" stroke="#e8c468" stroke-width="2"/>
+    <rect x="35" y="75" width="20" height="20" fill="#5a3d27"/>
+    <rect x="145" y="75" width="20" height="20" fill="#5a3d27"/>
+  </svg>
+</div>
+
+<main>
+  <div class="stage">
+
+    <!-- Top bar -->
+    <header class="topbar" data-anim="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <!-- Nutri Greenz N + leaf logomark -->
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ng-leaf" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7fd16a"/>
+                <stop offset="100%" stop-color="#2f7a2f"/>
+              </linearGradient>
+              <linearGradient id="ng-n" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2a6a2a"/>
+                <stop offset="100%" stop-color="#1f4d1f"/>
+              </linearGradient>
+            </defs>
+            <!-- Serif N: left vertical, diagonal, right vertical with serifs -->
+            <path d="
+              M 18 18
+              L 18 86
+              L 30 86 L 30 30
+              L 66 86
+              L 78 86 L 78 18
+              L 66 18 L 66 74
+              L 30 18 Z
+            " fill="url(#ng-n)"/>
+            <!-- Top serifs -->
+            <rect x="14" y="18" width="20" height="5" rx="1" fill="#1f4d1f"/>
+            <rect x="62" y="18" width="20" height="5" rx="1" fill="#1f4d1f"/>
+            <!-- Bottom serifs -->
+            <rect x="14" y="83" width="20" height="5" rx="1" fill="#1f4d1f"/>
+            <rect x="62" y="83" width="20" height="5" rx="1" fill="#1f4d1f"/>
+            <!-- Leaf stem -->
+            <path d="M 72 24 C 72 14, 76 8, 80 6" stroke="#2f7a2f" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <!-- Leaf body -->
+            <path d="M 78 4 C 92 6, 96 18, 88 28 C 78 26, 72 18, 78 4 Z" fill="url(#ng-leaf)"/>
+            <!-- Leaf vein -->
+            <path d="M 80 8 C 84 14, 86 20, 87 26" stroke="#1f4d1f" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.5"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Nutri Greenz</span>
+          <span class="brand-tag">Born in Soil, built for tomorrow</span>
+        </span>
+      </div>
+      <span class="pill"><span class="dot"></span> Sowing the site</span>
+    </header>
+
+    <!-- Hero card -->
+    <section class="card" data-anim="card">
+      <span class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg>
+        Site Under Construction
+      </span>
+
+      <h1>
+        Born in <span class="accent">soil</span>,<br/>
+        built for tomorrow.
+      </h1>
+
+      <p class="lede">
+        Hyderabad's home for clean, native, farm-sourced food — millets, pulses,
+        cold-pressed oils, and indigenous grains, delivered straight to urban households.
+        Find us at your gated-community stall today; the online store is sprouting soon.
+      </p>
+
+      <!-- Progress -->
+      <div class="progress-wrap" data-anim="progress">
+        <div class="progress-meta">
+          <span>Cultivating the storefront</span>
+          <strong><span class="progress-num">0</span>%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" data-target="50"></div>
+        </div>
+      </div>
+
+      <!-- Notify form -->
+      <form class="form" id="notify-form" novalidate>
+        <input type="email" name="email" placeholder="your@email.com" aria-label="Email address" required />
+        <button class="btn" type="submit">
+          Notify me when we sprout
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+      <p class="form-note" id="form-note">Be the first to step into the farm when we open the gate. No spam — just field updates.</p>
+    </section>
+
+    <!-- Stats / What's coming -->
+    <section class="stats" data-anim="stats">
+      <article class="stat">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 7v6c0 5 3.5 9 8 9s8-4 8-9V7Z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3>Clean &amp; native</h3>
+        <p>Millets, pulses, cold-pressed oils and indigenous grains — farm-sourced, the way our grandparents ate.</p>
+      </article>
+
+      <article class="stat">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        </div>
+        <h3>Right where you live</h3>
+        <p>Stalls inside Hyderabad's gated communities, plus an online store on the way — two simple ways to shop.</p>
+      </article>
+
+      <article class="stat">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c-2 4-6 7-9 7s-7-3-9-7c2-4 6-7 9-7s7 3 9 7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>Better together</h3>
+        <p>Consolidated community deliveries, loyalty rewards, and referrals that thank you for sharing the goodness.</p>
+      </article>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" data-anim="footer">
+      <span>© <span id="year"></span> Nutri Greenz Farm Technologies Pvt Ltd · Hyderabad</span>
+      <div class="socials" aria-label="Social links">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 5.8a8.5 8.5 0 0 1-2.4.7 4.2 4.2 0 0 0 1.8-2.3 8.4 8.4 0 0 1-2.6 1 4.2 4.2 0 0 0-7.2 3.8A11.9 11.9 0 0 1 3 4.8a4.2 4.2 0 0 0 1.3 5.6 4.2 4.2 0 0 1-1.9-.5v.1a4.2 4.2 0 0 0 3.4 4.1 4.3 4.3 0 0 1-1.9.1 4.2 4.2 0 0 0 3.9 2.9A8.5 8.5 0 0 1 2 18.6 12 12 0 0 0 8.5 20c7.8 0 12-6.4 12-12v-.6A8.5 8.5 0 0 0 22 5.8Z"/></svg></a>
+        <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></a>
+      </div>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (window.gsap) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (!reduceMotion) {
+      // Entrance timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      gsap.set('[data-anim]', { opacity: 0, y: 40, rotateX: -8, transformPerspective: 1200, transformOrigin: '50% 100%' });
+      gsap.set('.float', { opacity: 0, y: 30, scale: 0.9 });
+      gsap.set('.stat', { opacity: 0, y: 30, rotateX: -10, transformPerspective: 1000 });
+
+      tl.to('[data-anim="top"]',      { opacity: 1, y: 0, rotateX: 0, duration: 0.9 })
+        .to('[data-anim="card"]',     { opacity: 1, y: 0, rotateX: 0, duration: 1.1 }, '-=0.5')
+        .to('[data-anim="progress"]', { opacity: 1, y: 0, rotateX: 0, duration: 0.7 }, '-=0.5')
+        .to('.stat', { opacity: 1, y: 0, rotateX: 0, duration: 0.8, stagger: 0.12 }, '-=0.3')
+        .to('[data-anim="footer"]',   { opacity: 1, y: 0, rotateX: 0, duration: 0.7 }, '-=0.4')
+        .to('.float', { opacity: 0.95, y: 0, scale: 1, duration: 1.2, stagger: 0.08, ease: 'power2.out' }, '-=1.2');
+
+      // Animate progress bar
+      const bar = document.querySelector('.progress-bar');
+      const num = document.querySelector('.progress-num');
+      const target = parseInt(bar.dataset.target, 10) || 70;
+      const counter = { v: 0 };
+      gsap.to(bar, { width: target + '%', duration: 1.6, ease: 'power2.out', delay: 0.6 });
+      gsap.to(counter, {
+        v: target, duration: 1.6, ease: 'power2.out', delay: 0.6,
+        onUpdate: () => { num.textContent = Math.round(counter.v); }
+      });
+
+      // Gentle floating loops
+      gsap.to('.float.leaf-1',  { y: '+=18', rotate: '-=4', duration: 5.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.leaf-2',  { y: '-=14', rotate: '+=3', duration: 6,   yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.wheat',   { y: '+=12', rotate: '+=2', duration: 7,   yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.tomato',  { y: '-=16', duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.carrot',  { y: '+=10', rotate: '-=3', duration: 5,   yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.seed',    { y: '+=24', x: '+=10',     duration: 6,   yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      gsap.to('.float.barn',    { y: '-=8',                 duration: 8,   yoyo: true, repeat: -1, ease: 'sine.inOut' });
+
+      // Subtle parallax on pointer move
+      const scene = document.querySelector('.scene');
+      window.addEventListener('pointermove', (e) => {
+        const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        gsap.to('.float.leaf-1', { x: x * 18, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        gsap.to('.float.wheat',  { x: x * -22, y: y * 10, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        gsap.to('.float.tomato', { x: x * -14, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+        gsap.to('.float.barn',   { x: x * 8,   duration: 1.4, ease: 'power2.out', overwrite: 'auto' });
+        gsap.to('.scene',        { rotateY: x * 1.2, rotateX: -y * 1.2, duration: 1.2, ease: 'power2.out', overwrite: 'auto' });
+      }, { passive: true });
+    } else {
+      gsap.set('[data-anim], .float, .stat', { opacity: 1, y: 0, rotateX: 0 });
+      const bar = document.querySelector('.progress-bar');
+      const num = document.querySelector('.progress-num');
+      const target = parseInt(bar.dataset.target, 10) || 70;
+      bar.style.width = target + '%';
+      num.textContent = target;
+    }
+  }
+
+  // Notify form
+  const form = document.getElementById('notify-form');
+  const note = document.getElementById('form-note');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = form.querySelector('input[name="email"]').value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) {
+      note.textContent = 'Please enter a valid email so we can find you at harvest time.';
+      note.className = 'form-note';
+      return;
+    }
+    note.textContent = "You're on the list. We'll send a basket of news your way 🌾";
+    note.className = 'form-note success';
+    form.reset();
+  });
+</script>
+</body>
+</html>
